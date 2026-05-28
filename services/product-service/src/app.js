@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const db = require("./db");
+const redis = require("./cache");
 
 const app = express();
 
@@ -19,10 +20,20 @@ app.get("/health", (req, res) => {
 });
 
 app.get("/products", async (req, res) => {
+  const cacheKey = "products:all";
+  const cachedProducts = await redis.get(cacheKey);
+
+  if (cachedProducts) {
+    return res.json(JSON.parse(cachedProducts));
+  }
+
   const result = await db.query(
     "SELECT id, name, price FROM products ORDER BY id",
   );
-  res.json(result.rows);
+
+  await redis.setex(cacheKey, 60, JSON.stringify(result.rows));
+
+  return res.json(result.rows);
 });
 
 app.get("/products/:id", async (req, res) => {
