@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: microservices-frontend:local
-          imagePullPolicy: Never
+          image: ravi0706/microservices-frontend:v1
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5173
           env:

@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: auth-service:local
-          imagePullPolicy: Never
+          image: ravi0706/auth-service:v1
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3001
           envFrom:
@@ -66,8 +66,8 @@ spec:
     spec:
       containers:
         - name: product-service
-          image: product-service:local
-          imagePullPolicy: Never
+          image: ravi0706/product-service:v1
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3002
           envFrom:
@@ -117,8 +117,8 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: order-service:local
-          imagePullPolicy: Never
+          image: ravi0706/order-service:v1
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3003
           envFrom:
