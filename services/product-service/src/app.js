@@ -1,16 +1,11 @@
 require("dotenv").config();
 
 const express = require("express");
+const db = require("./db");
 
 const app = express();
 
 app.use(express.json());
-
-const products = [
-  { id: 1, name: "Laptop", price: 75000 },
-  { id: 2, name: "Keyboard", price: 2500 },
-  { id: 3, name: "Mouse", price: 1200 },
-];
 
 app.get("/", (req, res) => {
   res.json({ message: "Product Service Running" });
@@ -23,18 +18,24 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.get("/products", (req, res) => {
-  res.json(products);
+app.get("/products", async (req, res) => {
+  const result = await db.query(
+    "SELECT id, name, price FROM products ORDER BY id",
+  );
+  res.json(result.rows);
 });
 
-app.get("/products/:id", (req, res) => {
-  const product = products.find((item) => item.id === Number(req.params.id));
+app.get("/products/:id", async (req, res) => {
+  const result = await db.query(
+    "SELECT id, name, price FROM products WHERE id = $1",
+    [req.params.id],
+  );
 
-  if (!product) {
+  if (result.rows.length === 0) {
     return res.status(404).json({ message: "product not found" });
   }
 
-  return res.json(product);
+  return res.json(result.rows[0]);
 });
 
 const port = Number(process.env.PORT || 3002);
