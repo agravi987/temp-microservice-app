@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(160) NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(160) NOT NULL UNIQUE,
+  price INTEGER NOT NULL CHECK (price >= 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  product_id INTEGER NOT NULL,
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  status VARCHAR(40) NOT NULL DEFAULT 'CREATED',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO products (name, price)
+VALUES
+  ('Laptop', 75000),
+  ('Keyboard', 2500),
+  ('Mouse', 1200)
+ON CONFLICT DO NOTHING;
